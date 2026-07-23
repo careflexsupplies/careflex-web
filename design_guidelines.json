@@ -1,0 +1,66 @@
+{
+  "theme": "Light theme primary (warm, medical/healthcare default for clarity and accessibility). Avoid harsh clinical white; use warm off-whites.",
+  "typography": {
+    "headings": "Merriweather or Lora (Serif) for a warm, trustworthy, and authoritative feel.",
+    "body": "Work Sans or Manrope (Sans-serif) for high legibility, especially for the 55+ demographic.",
+    "notes": "Generous line-height (leading-relaxed). Minimum 16px (text-base) body size, preferring 18px (text-lg) for key paragraphs to ensure accessibility for seniors. Headings should fluidly scale to a maximum of text-5xl on desktop. Use tracking-tight on large headings."
+  },
+  "colors": {
+    "primary": "#1D3557 (Deep Calming Blue - Authority, Trust)",
+    "accent": "#E07A5F (Warm Terracotta - High contrast, urgent but warm CTA)",
+    "background": "#FAFAF8 (Warm Off-White - Calming, reduces eye strain)",
+    "surface": "#FFFFFF (Pure White - For data tables and product cards to pop)",
+    "text_primary": "#0F172A (Slate 900 - High contrast reading)",
+    "text_secondary": "#475569 (Slate 600 - Secondary info)",
+    "success": "#2E7D32 (Trust/Accreditation badges)"
+  },
+  "visual_enhancers": "Solid backgrounds for data and forms. NO glassmorphism for clinical/medical apps to prevent visual refraction of data. Use crisp 1px borders (border-slate-200) for structural definition. Subtle drop shadows (shadow-sm) on interactive elements.",
+  "component_name": "CareFlex Custom & Shadcn Components",
+  "grids": "Use 12-column responsive grid (grid-cols-1 md:grid-cols-4 lg:grid-cols-12). Generous gap sizes (gap-8, gap-12). Bento-style grid for category tiles (e.g., col-span-4).",
+  "layouts": "Spacious, clear hierarchy with ample negative space (p-8, p-12, p-16). Mobile-first layout ensuring tap targets are a minimum of 44px tall/wide. Left-align dense content; center-align only hero headings or small trust badge clusters.",
+  "motion": "Subtle, deliberate motion. Hover states on buttons (e.g., slight background darken, shadow increase). No distracting looping animations. Use accordion-down/up for FAQs.",
+  "accessibility": "STRICT WCAG 2.1 AA compliance. Minimum contrast ratio 4.5:1 for standard text. 16px+ base font size. 44px+ tap targets. Clear focus rings (focus-visible:ring-2 focus-visible:ring-offset-2). Use aria-labels on icons.",
+  "media": "Images must show genuine human connection and warmth, not overly clinical or sterile environments. Preserve brand/subjects in images.",
+  "3d_libraries": "Do not use 3D libraries. 3D and heavy interactive canvas elements may confuse the target demographic (55+) or slow down performance on older devices. Stick to high-fidelity 2D imagery.",
+  "image_urls": {
+    "hero_and_general": [
+      {
+        "url": "https://images.pexels.com/photos/16364307/pexels-photo-16364307.jpeg",
+        "description": "Caregiver helping elderly woman, empathy and support",
+        "category": "Hero Section / Home Page"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1762955911431-4c44c7c3f408",
+        "description": "Caregiver assisting elderly couple with coloring",
+        "category": "About Us / Patient Intake"
+      }
+    ],
+    "products": [
+      {
+        "url": "https://images.pexels.com/photos/6194680/pexels-photo-6194680.jpeg",
+        "description": "Individual seated in wheelchair, independence",
+        "category": "Products Hub - Mobility Aids Category"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1642680936843-b09109c69104",
+        "description": "Wheelchair isolated against white background",
+        "category": "Product Detail Page Mockup"
+      }
+    ],
+    "providers": [
+      {
+        "url": "https://images.pexels.com/photos/7578810/pexels-photo-7578810.jpeg",
+        "description": "Focused female doctor in white coat",
+        "category": "For Providers / Referrals Page"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7",
+        "description": "Doctor holding red stethoscope",
+        "category": "Insurance & Medicare Explainer"
+      }
+    ]
+  },
+  "component_path": "/app/frontend/src/components/ui",
+  "instructions_to_main_agent": "1. Set up routing for Public Site (Home, Products, Insurance, Intake, Providers, Blog, FAQ, Contact) and Admin Dashboard. 2. Update tailwind.config.js and index.css with the provided color palette (map Deep Blue to primary, Warm Terracotta to accent/destructive). 3. Implement a fixed/sticky header with logo, navigation, and a prominent click-to-call button. 4. Build a hero section with a dual CTA (Get Started / Call Now) and trust badges. 5. Create category tiles and a filterable product catalog. 6. Implement multi-step lead forms using explicit HTML/Tailwind styling with clear progress indicators. 7. Do not use fully transparent header backgrounds. 8. Build a separate Admin Dashboard using dense, high-contrast layouts (solid colors, sharp edges). 9. Apply 'data-testid' to EVERY interactive element (links, buttons, inputs).",
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": "1. Do not use dark colors as gradients. Avoid all generic AI slop aesthetics. 2. Use 2-3x more spacing (p-8, p-12, p-16) for breathing room. 3. NEVER apply 'transition: all'; use specific transitions (e.g., transition-colors, transition-transform). 4. Do not center-align the app container (remove .App text-align center). 5. Buttons must have distinct hover and active states with accessible text contrast. 6. DO NOT use AI emojis (🤖, 🧠) for icons; install and use 'lucide-react' or '@phosphor-icons/react'. 7. Forms and dropdowns must have solid backgrounds, never transparent."
+}
