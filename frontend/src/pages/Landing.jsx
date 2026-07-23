@@ -4,6 +4,7 @@ import { HeartPulse, CheckCircle2, ArrowRight, ArrowLeft } from "lucide-react";
 import { CallButton, TrustBadges } from "@/components/Layout";
 import { usePageMeta } from "@/components/Shared";
 import { api, trackEvent } from "@/lib/api";
+import { toast } from "sonner";
 
 const needs = [
   { value: "mobility-aids", label: "Wheelchair / Walker / Mobility" },
@@ -21,9 +22,13 @@ export default function Landing() {
   const [done, setDone] = useState(false);
 
   const submit = async () => {
-    await api.post("/leads", { type: "campaign", source: "landing_page", variant: "A", ...form, message: `Needs: ${form.equipment_category}; Insurance: ${form.insurance}` });
-    trackEvent("form_submit", { form: "campaign_landing" });
-    setDone(true);
+    try {
+      await api.post("/leads", { type: "campaign", source: "landing_page", variant: "A", ...form, message: `Needs: ${form.equipment_category}; Insurance: ${form.insurance}` });
+      trackEvent("form_submit", { form: "campaign_landing" });
+      setDone(true);
+    } catch {
+      toast.error("Something went wrong. Please try again or call us.");
+    }
   };
 
   const inputCls = "w-full px-4 py-3.5 min-h-[44px] rounded-md border border-slate-300 bg-white text-lg focus:border-primary";
