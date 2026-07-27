@@ -11,7 +11,7 @@ BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://flex-health-lead.pre
 API = f"{BASE_URL}/api"
 
 # Session token created via mongosh per /app/auth_testing.md
-SESSION_TOKEN = os.environ.get("TEST_SESSION_TOKEN", "test_session_1784840316038")
+SESSION_TOKEN = os.environ.get("TEST_SESSION_TOKEN", "test_session_iter2_1785180415052")
 
 
 @pytest.fixture(scope="session")
@@ -40,6 +40,10 @@ class TestPublicContent:
         assert isinstance(data, list) and len(data) == 4
         slugs = {c["slug"] for c in data}
         assert {"mobility-aids", "orthotics", "diabetes-care", "wound-care"} <= slugs
+        names_by_slug = {c["slug"]: c["name"] for c in data}
+        assert names_by_slug["orthotics"] == "Braces"
+        assert names_by_slug["diabetes-care"] == "Diabetic Supplies"
+        assert names_by_slug["wound-care"] == "Surgical Dressings"
 
     def test_products_list(self, s):
         r = s.get(f"{API}/products")
@@ -145,6 +149,41 @@ class TestLeads:
         assert d["type"] == "campaign"
         assert d.get("insurance") == "Medicare"
 
+    # ---- New Patient lead (iteration 2) ----
+    def test_create_new_patient_lead_medicare(self, s):
+        payload = {"type": "new_patient", "plan_type": "medicare", "name": "TEST_NPMed",
+                   "phone": "555-2222", "email": "np1@example.com", "equipment_category": "cgm",
+                   "message": "New patient (MEDICARE) - needs: cgm"}
+        r = s.post(f"{API}/leads", json=payload)
+        assert r.status_code == 200
+        d = r.json()
+        assert d["type"] == "new_patient"
+        assert d.get("plan_type") == "medicare"
+        assert d.get("equipment_category") == "cgm"
+        assert d["status"] == "new"
+
+    def test_create_new_patient_lead_ppo(self, s):
+        payload = {"type": "new_patient", "plan_type": "ppo", "name": "TEST_NPPPO",
+                   "phone": "555-3333", "email": "np2@example.com", "equipment_category": "braces"}
+        r = s.post(f"{API}/leads", json=payload)
+        assert r.status_code == 200
+        d = r.json()
+        assert d.get("plan_type") == "ppo"
+
+    # ---- Order lead (iteration 2 cart) ----
+    def test_create_order_lead_with_promo(self, s):
+        payload = {"type": "order", "name": "TEST_Order", "phone": "555-4444", "email": "o@example.com",
+                   "items": "2x Quad Cane ($44.99); 1x Wrist Splint ($24.99)",
+                   "promo_code": "CARE10", "total": 103.48,
+                   "message": "Cash-pay order request - total $103.48 (promo CARE10)"}
+        r = s.post(f"{API}/leads", json=payload)
+        assert r.status_code == 200
+        d = r.json()
+        assert d["type"] == "order"
+        assert d.get("promo_code") == "CARE10"
+        assert d.get("total") == 103.48
+        assert "items" in d
+
 
 # ---------- Subscribers ----------
 class TestSubscribers:
@@ -193,7 +232,20 @@ class TestAdminCRUD:
     def test_admin_leads_list(self, auth_s):
         r = auth_s.get(f"{API}/admin/leads")
         assert r.status_code == 200
-        assert isinstance(r.json(), list)
+        leads = r.json()
+        assert isinstance(leads, list)
+        # After iteration 2 lead creations, we should see new_patient and order leads
+        types = {l.get("type") for l in leads}
+        assert "new_patient" in types
+        assert "order" in types
+        # Verify plan_type persisted for new_patient leads
+        np = [l for l in leads if l.get("type") == "new_patient" and l.get("name", "").startswith("TEST_NP")]
+        assert len(np) >= 1
+        assert any(l.get("plan_type") in ("medicare", "ppo") for l in np)
+        # Verify order fields
+        orders = [l for l in leads if l.get("type") == "order" and l.get("name", "").startswith("TEST_Order")]
+        assert len(orders) >= 1
+        assert orders[0].get("promo_code") == "CARE10"
 
     def test_admin_subscribers_list(self, auth_s):
         r = auth_s.get(f"{API}/admin/subscribers")

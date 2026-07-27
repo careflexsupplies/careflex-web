@@ -14,9 +14,9 @@ IMG = {
 
 CATEGORIES = [
     {"slug": "mobility-aids", "name": "Mobility Aids", "name_es": "Ayudas de Movilidad", "description": "Wheelchairs, walkers, rollators, canes and scooters to keep you moving safely.", "description_es": "Sillas de ruedas, andadores, rollators, bastones y scooters para mantenerlo en movimiento con seguridad.", "image": IMG["mobility"], "order": 1},
-    {"slug": "orthotics", "name": "Orthotics", "name_es": "Ortesis", "description": "Braces and supports for knees, backs, ankles and wrists — fitted for comfort.", "description_es": "Soportes y aparatos ortopédicos para rodillas, espalda, tobillos y muñecas.", "image": IMG["ortho"], "order": 2},
-    {"slug": "diabetes-care", "name": "Diabetes Care", "name_es": "Cuidado de la Diabetes", "description": "Glucose monitors, test strips, CGMs and diabetic footwear — resupply reminders available.", "description_es": "Monitores de glucosa, tiras reactivas, MCG y calzado para diabéticos.", "image": IMG["diabetes"], "order": 3},
-    {"slug": "wound-care", "name": "Wound Care", "name_es": "Cuidado de Heridas", "description": "Advanced dressings, bandages and wound care supplies delivered to your door.", "description_es": "Apósitos avanzados, vendajes y suministros para el cuidado de heridas.", "image": IMG["wound"], "order": 4},
+    {"slug": "orthotics", "name": "Braces", "name_es": "Soportes Ortopédicos", "description": "Knee, back, ankle and wrist braces — fitted for comfort and recovery.", "description_es": "Soportes para rodilla, espalda, tobillo y muñeca.", "image": IMG["ortho"], "order": 2},
+    {"slug": "diabetes-care", "name": "Diabetic Supplies", "name_es": "Suministros para Diabéticos", "description": "CGM devices, glucose monitors, test strips and diabetic footwear.", "description_es": "Dispositivos MCG, monitores de glucosa, tiras reactivas y calzado.", "image": IMG["diabetes"], "order": 3},
+    {"slug": "wound-care", "name": "Surgical Dressings", "name_es": "Apósitos Quirúrgicos", "description": "Advanced dressings, bandages and wound care supplies delivered to your door.", "description_es": "Apósitos avanzados y suministros para heridas.", "image": IMG["wound"], "order": 4},
 ]
 
 PRODUCTS = [

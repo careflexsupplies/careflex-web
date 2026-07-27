@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { BadgeCheck, Wallet, Bell } from "lucide-react";
+import { BadgeCheck, Wallet, Bell, Plus } from "lucide-react";
 import { useLang } from "@/i18n";
+import { useCart } from "@/context/CartContext";
 import { api, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 
@@ -32,6 +33,13 @@ export function CoverageBadge({ coverage }) {
 }
 
 export function ProductCard({ product }) {
+  const { addItem } = useCart();
+  const add = (e) => {
+    e.preventDefault();
+    addItem(product);
+    trackEvent("add_to_cart", { product: product.slug });
+    toast.success(`${product.name} added to cart`);
+  };
   return (
     <Link to={`/product/${product.slug}`} data-testid={`product-card-${product.slug}`}
       className="group bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
@@ -43,7 +51,13 @@ export function ProductCard({ product }) {
         <h3 className="font-serif text-lg font-semibold text-primary leading-snug">{product.name}</h3>
         <p className="text-slate-600 text-base line-clamp-2">{product.description}</p>
         {product.coverage === "cash" && product.price != null && (
-          <p className="text-xl font-bold text-slate-900 mt-auto">${product.price.toFixed(2)}</p>
+          <div className="mt-auto flex items-center justify-between gap-3">
+            <p className="text-xl font-bold text-slate-900">${product.price.toFixed(2)}</p>
+            <button onClick={add} data-testid={`add-to-cart-${product.slug}`}
+              className="inline-flex items-center gap-1.5 rounded-full bg-accent text-accent-foreground font-semibold px-4 py-2 min-h-[40px] text-sm hover:brightness-95 transition-[filter]">
+              <Plus className="w-4 h-4" aria-hidden="true" /> Add
+            </button>
+          </div>
         )}
       </div>
     </Link>

@@ -76,6 +76,9 @@ async def create_session(body: SessionRequest, response: Response):
     if r.status_code != 200:
         raise HTTPException(status_code=401, detail="Invalid session id")
     data = r.json()
+    allowlist = [e.strip().lower() for e in os.environ.get("ADMIN_EMAILS", "").split(",") if e.strip()]
+    if allowlist and data["email"].lower() not in allowlist:
+        raise HTTPException(status_code=403, detail="This account is not authorized for the admin dashboard")
     existing = await db.users.find_one({"email": data["email"]}, {"_id": 0})
     if existing:
         user_id = existing["user_id"]

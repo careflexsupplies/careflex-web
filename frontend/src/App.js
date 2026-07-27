@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "sonner";
 import { LangProvider } from "@/i18n";
 import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
 import Home from "@/pages/Home";
 import Products from "@/pages/Products";
 import ProductDetail from "@/pages/ProductDetail";
@@ -16,6 +17,8 @@ import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import FAQ from "@/pages/FAQ";
 import ServiceArea from "@/pages/ServiceArea";
+import NewPatient from "@/pages/NewPatient";
+import Cart from "@/pages/Cart";
 import AdminLogin from "@/pages/AdminLogin";
 import Admin from "@/pages/admin/Admin";
 import AuthCallback from "@/pages/AuthCallback";
@@ -40,6 +43,8 @@ function AppRouter() {
       <Route path="/blog/:slug" element={<BlogPost />} />
       <Route path="/faq" element={<FAQ />} />
       <Route path="/service-area" element={<ServiceArea />} />
+      <Route path="/new-patient" element={<NewPatient />} />
+      <Route path="/cart" element={<Cart />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<Admin />} />
     </Routes>
@@ -51,10 +56,12 @@ function App() {
     <div className="App">
       <LangProvider>
         <AuthProvider>
-          <BrowserRouter>
-            <AppRouter />
-          </BrowserRouter>
-          <Toaster position="top-center" richColors />
+          <CartProvider>
+            <BrowserRouter>
+              <AppRouter />
+            </BrowserRouter>
+            <Toaster position="top-center" richColors />
+          </CartProvider>
         </AuthProvider>
       </LangProvider>
     </div>

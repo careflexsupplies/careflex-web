@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { Phone, Menu, X, Printer, Mail, Clock, MapPin, ShieldCheck, Award, HeartPulse, MessageCircle } from "lucide-react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Phone, Menu, X, Printer, Mail, Clock, MapPin, ShieldCheck, HeartPulse, MessageCircle, Search, ShoppingCart, ChevronDown, Truck, Facebook, Instagram, Linkedin } from "lucide-react";
 import { useLang } from "@/i18n";
-import { PHONE, PHONE_HREF, FAX, EMAIL, api, trackEvent } from "@/lib/api";
+import { useCart } from "@/context/CartContext";
+import { PHONE, PHONE_HREF, FAX, EMAIL, SOCIALS, HQAA_SEAL, api, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 
 export function CallButton({ className = "", size = "md" }) {
@@ -17,67 +18,162 @@ export function CallButton({ className = "", size = "md" }) {
   );
 }
 
-const navItems = [
-  { to: "/", key: "nav_home" },
-  { to: "/products", key: "nav_products" },
-  { to: "/insurance", key: "nav_insurance" },
-  { to: "/providers", key: "nav_providers" },
-  { to: "/blog", key: "nav_resources" },
-  { to: "/faq", key: "nav_faq" },
-  { to: "/about", key: "nav_about" },
-  { to: "/contact", key: "nav_contact" },
+const catNav = [
+  { to: "/products", key: "shop_all" },
+  { to: "/products/category/diabetes-care", label: "Diabetic Supplies" },
+  { to: "/products/category/mobility-aids", label: "Mobility Aids" },
+  { to: "/products/category/orthotics", label: "Braces" },
 ];
 
+export function Logo() {
+  const { t } = useLang();
+  return (
+    <Link to="/" data-testid="header-logo" className="flex items-center gap-3 shrink-0">
+      <span className="w-11 h-11 rounded-xl bg-primary flex items-center justify-center shadow-sm">
+        <HeartPulse className="w-6 h-6 text-white" aria-hidden="true" />
+      </span>
+      <span className="leading-tight">
+        <span className="block font-serif text-2xl font-bold text-primary">CareFlex</span>
+        <span className="block text-xs text-slate-500 font-medium">{t("tagline")}</span>
+      </span>
+    </Link>
+  );
+}
+
+function SearchBar({ className = "" }) {
+  const { t } = useLang();
+  const navigate = useNavigate();
+  const [q, setQ] = useState("");
+  const submit = (e) => {
+    e.preventDefault();
+    navigate(`/products?search=${encodeURIComponent(q)}`);
+  };
+  return (
+    <form onSubmit={submit} role="search" className={`relative ${className}`} data-testid="header-search-form">
+      <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("search_placeholder")} aria-label="Search products" data-testid="header-search-input"
+        className="w-full pl-4 pr-12 py-2.5 min-h-[44px] rounded-full border-2 border-primary/30 bg-white focus:border-primary text-base" />
+      <button type="submit" aria-label="Search" data-testid="header-search-button"
+        className="absolute right-1 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-primary text-white inline-flex items-center justify-center hover:brightness-110 transition-[filter]">
+        <Search className="w-4 h-4" />
+      </button>
+    </form>
+  );
+}
+
 export function Header() {
-  const { t, toggle } = useLang();
+  const { t } = useLang();
+  const { toggle } = useLang();
+  const { count } = useCart();
   const [open, setOpen] = useState(false);
-  const location = useLocation();
+  const [npOpen, setNpOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 lg:h-20 gap-4">
-          <Link to="/" data-testid="header-logo" className="flex items-center gap-2 shrink-0">
-            <HeartPulse className="w-8 h-8 text-accent" aria-hidden="true" />
-            <span className="font-serif text-2xl font-bold text-primary">CareFlex</span>
-          </Link>
-          <nav className="hidden lg:flex items-center gap-1" aria-label="Main">
-            {navItems.map((n) => (
-              <NavLink key={n.to} to={n.to} data-testid={`nav-${n.key}`}
-                className={({ isActive }) => `px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive ? "text-primary bg-secondary" : "text-slate-600 hover:text-primary hover:bg-secondary"}`}>
-                {t(n.key)}
-              </NavLink>
-            ))}
-          </nav>
-          <div className="flex items-center gap-2">
-            <button onClick={toggle} data-testid="language-toggle" className="px-3 py-2 min-h-[44px] rounded-md border border-slate-300 text-sm font-semibold text-primary hover:bg-secondary transition-colors">
+    <header className="sticky top-0 z-50 bg-white shadow-sm">
+      {/* Tier 1 — utility bar */}
+      <div className="bg-emerald-950 text-emerald-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-10 flex items-center justify-between gap-4 text-sm">
+          <p className="inline-flex items-center gap-2 font-semibold" data-testid="same-day-shipping">
+            <Truck className="w-4 h-4 text-accent" aria-hidden="true" />{t("same_day")}
+          </p>
+          <div className="flex items-center gap-4">
+            <a href={PHONE_HREF} data-testid="topbar-phone" onClick={() => trackEvent("call_click")} className="hidden sm:inline-flex items-center gap-1.5 font-semibold hover:text-white">
+              <Phone className="w-3.5 h-3.5" aria-hidden="true" />{PHONE}
+            </a>
+            <span className="hidden md:flex items-center gap-3" data-testid="social-links">
+              <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" data-testid="social-facebook" className="hover:text-white"><Facebook className="w-4 h-4" /></a>
+              <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" data-testid="social-instagram" className="hover:text-white"><Instagram className="w-4 h-4" /></a>
+              <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" data-testid="social-linkedin" className="hover:text-white"><Linkedin className="w-4 h-4" /></a>
+            </span>
+            <button onClick={toggle} data-testid="language-toggle" className="px-2.5 py-1 rounded border border-emerald-700 text-xs font-bold hover:bg-emerald-900 transition-colors">
               {t("lang_toggle")}
             </button>
-            <a href={PHONE_HREF} data-testid="header-call-button" onClick={() => trackEvent("call_click")}
-              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground font-semibold px-4 py-2.5 min-h-[44px] hover:brightness-95 transition-[filter]">
-              <Phone className="w-4 h-4" aria-hidden="true" /><span className="whitespace-nowrap">{PHONE}</span>
-            </a>
-            <a href={PHONE_HREF} aria-label="Call CareFlex" className="sm:hidden inline-flex items-center justify-center w-11 h-11 rounded-full bg-accent text-accent-foreground">
+          </div>
+        </div>
+      </div>
+
+      {/* Tier 2 — logo / search / actions */}
+      <div className="border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
+          <Logo />
+          <SearchBar className="hidden md:block flex-1 max-w-xl mx-auto" />
+          <div className="flex items-center gap-2 ml-auto">
+            <a href={PHONE_HREF} aria-label="Call CareFlex" onClick={() => trackEvent("call_click")} className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-full bg-primary text-white">
               <Phone className="w-5 h-5" />
             </a>
+            <Link to="/contact" data-testid="header-contact-button"
+              className="hidden lg:inline-flex items-center gap-2 rounded-full border-2 border-primary text-primary font-semibold px-5 py-2.5 min-h-[44px] hover:bg-secondary transition-colors">
+              {t("contact_us")}
+            </Link>
+            <Link to="/cart" data-testid="header-cart-button" aria-label={`Cart, ${count} items`}
+              className="relative inline-flex items-center justify-center w-11 h-11 rounded-full border-2 border-slate-200 text-primary hover:border-primary transition-colors">
+              <ShoppingCart className="w-5 h-5" aria-hidden="true" />
+              {count > 0 && <span data-testid="cart-count" className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 px-1 rounded-full bg-accent text-accent-foreground text-xs font-bold flex items-center justify-center">{count}</span>}
+            </Link>
             <button onClick={() => setOpen(!open)} data-testid="mobile-menu-button" aria-label="Menu"
               className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-md border border-slate-300">
               {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
+        <div className="md:hidden px-4 pb-3"><SearchBar /></div>
       </div>
-      {open && (
-        <nav className="lg:hidden bg-white border-t border-slate-200 px-4 py-3" aria-label="Mobile" data-testid="mobile-menu">
-          {navItems.map((n) => (
-            <NavLink key={n.to} to={n.to} onClick={() => setOpen(false)}
-              className={`block px-3 py-3 rounded-md text-lg font-medium ${location.pathname === n.to ? "text-primary bg-secondary" : "text-slate-700"}`}>
-              {t(n.key)}
+
+      {/* Tier 3 — category nav */}
+      <nav className="hidden lg:block bg-primary" aria-label="Categories">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center">
+          {catNav.map((n) => (
+            <NavLink key={n.to} to={n.to} end data-testid={`catnav-${n.to.split("/").pop() || "all"}`}
+              className={({ isActive }) => `px-4 py-3 min-h-[44px] inline-flex items-center text-white font-semibold text-[15px] transition-colors ${isActive ? "bg-emerald-950" : "hover:bg-emerald-900"}`}>
+              {n.key ? t(n.key) : n.label}
             </NavLink>
           ))}
-          <Link to="/intake" onClick={() => setOpen(false)} className="block mt-2 px-3 py-3 rounded-md bg-primary text-primary-foreground text-lg font-semibold text-center">
-            {t("get_started")}
+          <div className="relative">
+            <button onClick={() => setNpOpen(!npOpen)} onBlur={() => setTimeout(() => setNpOpen(false), 150)} data-testid="catnav-new-patient"
+              className="px-4 py-3 min-h-[44px] inline-flex items-center gap-1 text-white font-semibold text-[15px] hover:bg-emerald-900 transition-colors" aria-expanded={npOpen}>
+              {t("new_patient_form")} <ChevronDown className={`w-4 h-4 transition-transform ${npOpen ? "rotate-180" : ""}`} aria-hidden="true" />
+            </button>
+            {npOpen && (
+              <div className="absolute left-0 top-full bg-white rounded-b-lg shadow-lg border border-slate-200 w-56 py-2 z-50" data-testid="new-patient-dropdown">
+                <Link to="/new-patient?plan=medicare" data-testid="np-dropdown-medicare" className="block px-5 py-3 text-slate-700 font-semibold hover:bg-secondary hover:text-primary">Medicare</Link>
+                <Link to="/new-patient?plan=ppo" data-testid="np-dropdown-ppo" className="block px-5 py-3 text-slate-700 font-semibold hover:bg-secondary hover:text-primary">Commercial PPO</Link>
+              </div>
+            )}
+          </div>
+          <NavLink to="/providers" data-testid="catnav-providers" className={({ isActive }) => `px-4 py-3 min-h-[44px] inline-flex items-center text-white font-semibold text-[15px] transition-colors ${isActive ? "bg-emerald-950" : "hover:bg-emerald-900"}`}>{t("nav_providers")}</NavLink>
+          <NavLink to="/about" data-testid="catnav-about" className={({ isActive }) => `px-4 py-3 min-h-[44px] inline-flex items-center text-white font-semibold text-[15px] transition-colors ${isActive ? "bg-emerald-950" : "hover:bg-emerald-900"}`}>{t("nav_about")}</NavLink>
+        </div>
+      </nav>
+
+      {/* Tier 4 — insurance + promo banner */}
+      <div className="bg-secondary border-b border-emerald-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-1.5 text-sm">
+          <p className="inline-flex items-center gap-2 font-bold text-primary" data-testid="accept-banner">
+            <ShieldCheck className="w-4 h-4" aria-hidden="true" />{t("accept_banner")}
+          </p>
+          <Link to="/new-patient" data-testid="banner-new-patient-cta"
+            className="inline-flex items-center rounded-full bg-primary text-white font-semibold px-4 py-1.5 hover:brightness-110 transition-[filter]">
+            {t("new_patient_form")} →
           </Link>
+          <p className="inline-flex items-center rounded-full bg-accent/15 text-emerald-950 font-semibold px-4 py-1.5 border border-accent/40" data-testid="promo-banner">
+            {t("promo_banner")}
+          </p>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {open && (
+        <nav className="lg:hidden bg-white border-t border-slate-200 px-4 py-3 max-h-[70vh] overflow-y-auto" aria-label="Mobile" data-testid="mobile-menu">
+          {catNav.map((n) => (
+            <NavLink key={n.to} to={n.to} onClick={() => setOpen(false)} className="block px-3 py-3 rounded-md text-lg font-medium text-slate-700">
+              {n.key ? t(n.key) : n.label}
+            </NavLink>
+          ))}
+          <p className="px-3 pt-3 pb-1 text-sm font-bold text-slate-400 uppercase">{t("new_patient_form")}</p>
+          <Link to="/new-patient?plan=medicare" onClick={() => setOpen(false)} className="block px-3 py-3 rounded-md text-lg font-medium text-slate-700">Medicare</Link>
+          <Link to="/new-patient?plan=ppo" onClick={() => setOpen(false)} className="block px-3 py-3 rounded-md text-lg font-medium text-slate-700">Commercial PPO</Link>
+          <NavLink to="/providers" onClick={() => setOpen(false)} className="block px-3 py-3 rounded-md text-lg font-medium text-slate-700">{t("nav_providers")}</NavLink>
+          <NavLink to="/about" onClick={() => setOpen(false)} className="block px-3 py-3 rounded-md text-lg font-medium text-slate-700">{t("nav_about")}</NavLink>
+          <NavLink to="/contact" onClick={() => setOpen(false)} className="block px-3 py-3 rounded-md text-lg font-medium text-slate-700">{t("contact_us")}</NavLink>
         </nav>
       )}
     </header>
@@ -87,12 +183,15 @@ export function Header() {
 export function TrustBadges({ className = "" }) {
   const { t } = useLang();
   const badges = [
-    { icon: Award, label: t("badge_accredited") },
     { icon: ShieldCheck, label: t("badge_medicare") },
     { icon: HeartPulse, label: t("badge_hipaa") },
   ];
   return (
-    <div className={`flex flex-wrap gap-3 ${className}`} data-testid="trust-badges">
+    <div className={`flex flex-wrap items-center gap-3 ${className}`} data-testid="trust-badges">
+      <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm" data-testid="hqaa-badge">
+        <img src={HQAA_SEAL} alt="HQAA Accredited seal" className="w-8 h-8 object-contain" loading="lazy" />
+        <span className="text-sm font-semibold text-primary">HQAA Accredited</span>
+      </span>
       {badges.map((b) => (
         <span key={b.label} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 text-sm font-semibold text-primary shadow-sm">
           <b.icon className="w-4 h-4 text-[hsl(var(--success))]" aria-hidden="true" />{b.label}
@@ -140,6 +239,11 @@ export function Footer() {
             <span className="font-serif text-2xl font-bold">CareFlex</span>
           </div>
           <p className="text-slate-300 leading-relaxed mb-4">{t("footer_tag")}</p>
+          <div className="flex items-center gap-3 mb-4" data-testid="footer-socials">
+            <a href={SOCIALS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-10 h-10 rounded-full bg-white/10 inline-flex items-center justify-center hover:bg-white/20 transition-colors"><Facebook className="w-4 h-4" /></a>
+            <a href={SOCIALS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full bg-white/10 inline-flex items-center justify-center hover:bg-white/20 transition-colors"><Instagram className="w-4 h-4" /></a>
+            <a href={SOCIALS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-10 h-10 rounded-full bg-white/10 inline-flex items-center justify-center hover:bg-white/20 transition-colors"><Linkedin className="w-4 h-4" /></a>
+          </div>
           <TrustBadges />
         </div>
         <div>
@@ -156,8 +260,11 @@ export function Footer() {
           <h3 className="font-serif text-lg font-semibold mb-4">Quick Links</h3>
           <ul className="space-y-2 text-slate-300">
             <li><Link to="/products" className="hover:text-white transition-colors">{t("nav_products")}</Link></li>
+            <li><Link to="/new-patient" className="hover:text-white transition-colors">{t("new_patient_form")}</Link></li>
             <li><Link to="/insurance" className="hover:text-white transition-colors">{t("nav_insurance")}</Link></li>
             <li><Link to="/intake" className="hover:text-white transition-colors">{t("get_started")}</Link></li>
+            <li><Link to="/blog" className="hover:text-white transition-colors">{t("nav_resources")}</Link></li>
+            <li><Link to="/faq" className="hover:text-white transition-colors">{t("nav_faq")}</Link></li>
             <li><Link to="/providers" className="hover:text-white transition-colors">{t("nav_providers")}</Link></li>
             <li><Link to="/service-area" className="hover:text-white transition-colors">{t("service_title")}</Link></li>
             <li><Link to="/admin" className="hover:text-white transition-colors" data-testid="footer-admin-link">Staff Login</Link></li>

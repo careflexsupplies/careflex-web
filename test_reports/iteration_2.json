@@ -1,0 +1,36 @@
+{
+  "summary": "Iteration 2 (Wonace redesign) end-to-end test. Backend: 30/30 pytest passed (categories renamed to Braces/Diabetic Supplies/Surgical Dressings verified via names_by_slug, new_patient lead with plan_type medicare/ppo persisted, order lead with items/total/promo_code persisted and readable via /api/admin/leads). Frontend: header 3-tier layout renders — utility bar (same-day-shipping, topbar-phone, socials, language-toggle), logo+search+contact+cart (count badge), category nav labels 'Diabetic Supplies' and 'Braces' correct, New Patient dropdown reveals np-dropdown-medicare/ppo, banners (accept/new-patient CTA/promo). Search 'wheelchair' navigates to /products?search=wheelchair and filters to 2 results. New Patient Medicare form submits successfully → new-patient-success shown; lead persisted. Cart flow: add-to-cart-quad-cane from /products?coverage=cash increments cart-count, /cart shows item + subtotal $34.99, invalid promo shows error toast, CARE10 applies −$3.50 (10%) and updates cart-total to $31.49, qty +/- works (subtotal 69.98 after inc), order submit clears cart and shows order-success; order lead visible in admin with promo_code CARE10, total, items. Product detail: detail-add-to-cart adds cash quad-cane; insurance standard-wheelchair check-eligibility-button routes to /new-patient. Español toggle switches banner text to 'Aceptamos Medicare y PPO Comercial'. Admin LeadsInbox filter buttons all 6 present (all/contact/referral/campaign/new_patient/order); new_patient rows show 'Plan: MEDICARE/PPO', order rows show 'Order total', 'CARE10' and 'Items:'.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Header cat nav", "issue": "Task expects data-testid=catnav-all for the 'Shop All Departments' link. Actual testid rendered is catnav-products because Layout.jsx line 125 derives testid from `n.to.split('/').pop() || 'all'` and pop() of '/products' returns 'products'. The label/functionality is fine; only the testid is off. Fix: hardcode catnav-all or add explicit `testid` key on the shop_all catNav entry.", "selector": "[data-testid=catnav-all]", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_careflex_backend.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix Layout.jsx catNav testid so the Shop All link exposes data-testid=catnav-all (currently catnav-products). One-line fix: add `testid: 'all'` on the shop_all entry and use it in the template."
+  ],
+  "critical_code_review_comments": [
+    "server.py:186 POST /api/leads uses model_config=extra='allow' + model_dump() — new fields (plan_type, items, total, promo_code, equipment_category) pass through unvalidated, which is currently intended but means backend does not enforce type/lead-type-specific required fields. Consider a discriminated union if strictness is needed later.",
+    "server.py:79-81 ADMIN_EMAILS allowlist branch is correct: empty env → skip check; non-empty → 403 when email not in list. Case-insensitive compare is good. Note: existing users in DB are not revoked if their email is later removed from allowlist — only /auth/session (login) enforces it, not /auth/me. If revocation is desired, extend get_current_user to re-check email against allowlist.",
+    "Layout.jsx catNav testid derivation is fragile (see UI bug). Prefer explicit per-item testid.",
+    "CartContext.jsx has no upper-bound qty limit (button lets you keep clicking +). Minor: consider max 99 to avoid absurd order totals.",
+    "Cart.jsx applyPromo lowercases via toUpperCase() but promo input has CSS `uppercase` (display only); underlying value still original. Comparison is fine (uppercased) but if user pastes 'care10 ' with trailing space, trim() handles it — OK.",
+    "NewPatient.jsx / Cart.jsx catch blocks swallow the axios error object. Consider `catch (err) { console.error(err); ... }` to help debugging in production."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_careflex_backend.py"
+  ],
+  "success_rate": {"backend": "100% (30/30)", "frontend": "~99% (all functional flows pass; 1 testid naming mismatch — catnav-all)"},
+  "test_credentials": "Injected mongo test session for admin: session_token=test_session_iter2_1785180415052 (user role=admin). Cleanup NOT run for this session so main agent can re-verify admin. Emergent Google OAuth is not exercised (kept per /app/memory/test_credentials.md).",
+  "seed_data_creation": "None — seeded categories/products/etc from iteration 1 already present. Test leads (TEST_ prefix) created during flow were deleted after (16 leads, 2 subscribers removed).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest runs with `TEST_SESSION_TOKEN=<token>` env and requires -o addopts='' to disable the default parallel xdist in /app/backend/pytest.ini (parallel workers race on lead creation vs admin_leads_list). Admin test session token: test_session_iter2_1785180415052 (in test_database.user_sessions). Category slugs are unchanged (mobility-aids, orthotics, diabetes-care, wound-care) but display names are 'Mobility Aids', 'Braces', 'Diabetic Supplies', 'Surgical Dressings'. Cart persistence key: localStorage cf_cart. Promo: CARE10 = 10%. Only 1 known nit: catnav-all data-testid is actually catnav-products.",
+  "rca of the issue": "catnav-all missing: In /app/frontend/src/components/Layout.jsx line 125, the JSX uses `data-testid={`catnav-${n.to.split('/').pop() || 'all'}`}`. For the first catNav entry {to:'/products', key:'shop_all'}, '/products'.split('/').pop() returns 'products' (truthy), so the fallback 'all' is never used. Result: element rendered as data-testid='catnav-products' instead of the expected 'catnav-all'. All other catnav testids are correct because their slugs (diabetes-care/mobility-aids/orthotics) happen to match the pop() of their paths. Fix: change catNav[0] to include an explicit `testid:'all'` and reference it, e.g., `data-testid={`catnav-${n.testid || n.to.split('/').pop()}`}`."
+}

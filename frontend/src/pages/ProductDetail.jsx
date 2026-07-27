@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { CheckCircle2, ArrowLeft, PackageCheck } from "lucide-react";
+import { CheckCircle2, ArrowLeft, PackageCheck, ShoppingCart } from "lucide-react";
 import { useLang } from "@/i18n";
+import { useCart } from "@/context/CartContext";
 import { api, trackEvent } from "@/lib/api";
 import Layout, { CallButton, TrustBadges } from "@/components/Layout";
 import { CoverageBadge, ResupplyOptIn, usePageMeta } from "@/components/Shared";
+import { toast } from "sonner";
 
 export default function ProductDetail() {
   const { slug } = useParams();
   const { t } = useLang();
+  const { addItem } = useCart();
   const [product, setProduct] = useState(null);
   const [notFound, setNotFound] = useState(false);
   usePageMeta(product?.name, product?.description);
@@ -54,7 +57,14 @@ export default function ProductDetail() {
               <span className="font-semibold" data-testid="product-stock">{product.in_stock ? "In stock — ships in 2–5 business days" : "Currently out of stock — call for availability"}</span>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Link to="/intake" data-testid="check-eligibility-button" onClick={() => trackEvent("cta_click", { cta: "check_eligibility", product: product.slug })}
+              {product.coverage === "cash" && product.price != null && (
+                <button onClick={() => { addItem(product); trackEvent("add_to_cart", { product: product.slug }); toast.success(`${product.name} added to cart`); }}
+                  data-testid="detail-add-to-cart"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-accent text-accent-foreground font-semibold px-8 py-4 text-lg min-h-[44px] hover:brightness-95 transition-[filter]">
+                  <ShoppingCart className="w-5 h-5" aria-hidden="true" /> Add to Cart
+                </button>
+              )}
+              <Link to={product.coverage === "insurance" ? "/new-patient" : "/intake"} data-testid="check-eligibility-button" onClick={() => trackEvent("cta_click", { cta: "check_eligibility", product: product.slug })}
                 className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground font-semibold px-8 py-4 text-lg min-h-[44px] hover:brightness-110 transition-[filter]">
                 {t("check_eligibility")}
               </Link>

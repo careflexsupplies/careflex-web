@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useLang } from "@/i18n";
 import { api } from "@/lib/api";
@@ -8,13 +8,18 @@ import { ProductCard, ResupplyOptIn, usePageMeta } from "@/components/Shared";
 
 export default function Products() {
   const { categorySlug } = useParams();
+  const [params] = useSearchParams();
   const { t, pick } = useLang();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(params.get("search") || "");
   const [coverage, setCoverage] = useState("");
   const category = categories.find((c) => c.slug === categorySlug);
   usePageMeta(category ? category.name : "Products", category?.description);
+
+  useEffect(() => {
+    setSearch(params.get("search") || "");
+  }, [params]);
 
   useEffect(() => {
     api.get("/categories").then((r) => setCategories(r.data));

@@ -30,6 +30,10 @@ const dict = {
     faq_title: "Frequently Asked Questions", blog_title: "Resources & Guides",
     service_title: "Delivery & Service Area", service_sub: "Free delivery across the Greater Houston region. Counties and cities we serve:",
     lang_toggle: "Español",
+    same_day: "Same Day Shipping", contact_us: "Contact Us", shop_all: "Shop All Departments",
+    new_patient_form: "New Patient Form", accept_banner: "We accept Medicare & Commercial PPO",
+    promo_banner: "Cash purchases: use code CARE10 for 10% off", cart: "Cart",
+    tagline: "Care that moves with you",
   },
   es: {
     nav_home: "Inicio", nav_products: "Productos", nav_insurance: "Seguro", nav_providers: "Para Proveedores",
@@ -60,6 +64,10 @@ const dict = {
     faq_title: "Preguntas Frecuentes", blog_title: "Recursos y Guías",
     service_title: "Entrega y Área de Servicio", service_sub: "Entrega gratuita en toda el área metropolitana de Houston. Condados y ciudades que servimos:",
     lang_toggle: "English",
+    same_day: "Envío el Mismo Día", contact_us: "Contáctenos", shop_all: "Todos los Departamentos",
+    new_patient_form: "Formulario de Paciente Nuevo", accept_banner: "Aceptamos Medicare y PPO Comercial",
+    promo_banner: "Compras directas: use el código CARE10 para 10% de descuento", cart: "Carrito",
+    tagline: "Cuidado que se mueve contigo",
   },
 };
 

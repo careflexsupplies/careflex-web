@@ -28,7 +28,7 @@ export default function LeadsInbox() {
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <h2 className="font-serif text-2xl font-bold text-primary">Lead Inbox</h2>
         <div className="flex gap-2">
-          {[["", "All"], ["contact", "Contact"], ["referral", "Referrals"], ["campaign", "Campaign"]].map(([val, label]) => (
+          {[["", "All"], ["contact", "Contact"], ["referral", "Referrals"], ["campaign", "Campaign"], ["new_patient", "New Patient"], ["order", "Orders"]].map(([val, label]) => (
             <button key={val} onClick={() => setFilter(val)} data-testid={`leads-filter-${val || "all"}`}
               className={`px-4 py-2 min-h-[44px] rounded-full border font-semibold text-sm transition-colors ${filter === val ? "bg-primary text-white border-primary" : "bg-white text-slate-700 border-slate-300"}`}>
               {label}
@@ -52,8 +52,11 @@ export default function LeadsInbox() {
                   {l.phone && <span className="mr-4">{l.phone}</span>}
                   {l.organization && <span className="mr-4">Org: {l.organization}</span>}
                   {l.insurance && <span className="mr-4">Insurance: {l.insurance}</span>}
-                  {l.equipment_category && <span>Needs: {l.equipment_category}</span>}
+                  {l.equipment_category && <span className="mr-4">Needs: {l.equipment_category}</span>}
+                  {l.plan_type && <span className="mr-4">Plan: {l.plan_type.toUpperCase()}</span>}
+                  {l.total != null && <span>Order total: ${Number(l.total).toFixed(2)}{l.promo_code ? ` (${l.promo_code})` : ""}</span>}
                 </p>
+                {l.items && <p className="text-slate-700 mt-2 leading-relaxed text-sm">Items: {l.items}</p>}
                 {l.message && <p className="text-slate-700 mt-2 leading-relaxed">{l.message}</p>}
                 <p className="text-xs text-slate-400 mt-2">{new Date(l.created_at).toLocaleString()}</p>
               </div>
