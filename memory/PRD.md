@@ -24,8 +24,18 @@ Fast, HIPAA-aware, conversion-optimized website for CareFlex (accredited DME sup
 - SEO: MedicalBusiness JSON-LD + meta/OG in index.html, robots.txt, sitemap.xml, per-page titles/descriptions
 - Analytics hooks: trackEvent() (gtag/posthog) on calls, CTAs, form submits; GA4/CallRail/Clarity/Tawk commented placeholders in public/index.html
 
+## Iteration 2 (July 2026 — Wonace-style redesign, tested 30/30 backend + all frontend flows)
+- Emerald green theme (primary hsl(163 88% 20%), amber accent) site-wide
+- 3-tier header: utility bar (Same Day Shipping, phone, socials placeholders, Español), logo w/ tagline "Care that moves with you" + product search (→ /products?search=) + Contact Us + cart icon w/ count; emerald category nav (Shop All Departments, Diabetic Supplies, Mobility Aids, Braces, New Patient Form dropdown Medicare/PPO, For Providers, About); banner: "We accept Medicare & Commercial PPO" + New Patient CTA + promo CARE10 10% off cash
+- Categories renamed: orthotics→Braces, diabetes-care→Diabetic Supplies, wound-care→Surgical Dressings (slugs unchanged)
+- /new-patient page: Medicare/PPO choice → name/phone/email + category dropdown (CGM/Mobility/Braces/Surgical Dressings) → lead type=new_patient
+- Cash-pay cart (/cart, localStorage cf_cart): add from cards/detail, qty (max 99), promo CARE10=10%, order request → lead type=order (items, total, promo_code). NO online payment — order confirmed by phone
+- HQAA Accredited seal (user asset) in trust badges; admin lead inbox filters for new_patient/order
+- Admin allowlist: ADMIN_EMAILS env (empty=allow all; enforced at login only, not session revocation)
+- Home: Wonace-style 3 feature cards (Glucose Monitors/CGM, Mobility Aids, Braces) + 12-product quick-shop grid
+
 ## Backlog (prioritized)
-- P0: Real Jotform HIPAA URL, real tracking IDs (GA4, CallRail, Clarity, Tawk), brand assets (logo, address, hours), admin email allowlist for access control
+- P0: Real Jotform HIPAA URL, real tracking IDs (GA4, CallRail, Clarity, Tawk), real social URLs, set ADMIN_EMAILS allowlist, brand assets (logo file, address, hours)
 - P1: Resupply reminder actual sending (Resend + Twilio) + admin scheduler, email notifications to staff on new leads, image upload for products (object storage)
 - P2: A/B variant B for landing page, review schema per product, CSV product import, blog categories/related-posts logic, accessibility audit pass (WCAG 2.1 AA formal), Spanish translations for product/blog content
 

@@ -19,7 +19,7 @@ export function CallButton({ className = "", size = "md" }) {
 }
 
 const catNav = [
-  { to: "/products", key: "shop_all" },
+  { to: "/products", key: "shop_all", testid: "all" },
   { to: "/products/category/diabetes-care", label: "Diabetic Supplies" },
   { to: "/products/category/mobility-aids", label: "Mobility Aids" },
   { to: "/products/category/orthotics", label: "Braces" },
@@ -122,7 +122,7 @@ export function Header() {
       <nav className="hidden lg:block bg-primary" aria-label="Categories">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center">
           {catNav.map((n) => (
-            <NavLink key={n.to} to={n.to} end data-testid={`catnav-${n.to.split("/").pop() || "all"}`}
+            <NavLink key={n.to} to={n.to} end data-testid={`catnav-${n.testid || n.to.split("/").pop()}`}
               className={({ isActive }) => `px-4 py-3 min-h-[44px] inline-flex items-center text-white font-semibold text-[15px] transition-colors ${isActive ? "bg-emerald-950" : "hover:bg-emerald-900"}`}>
               {n.key ? t(n.key) : n.label}
             </NavLink>

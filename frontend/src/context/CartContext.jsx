@@ -19,7 +19,7 @@ export function CartProvider({ children }) {
     });
   };
   const removeItem = (slug) => setItems((prev) => prev.filter((i) => i.slug !== slug));
-  const updateQty = (slug, qty) => setItems((prev) => prev.map((i) => (i.slug === slug ? { ...i, qty: Math.max(1, qty) } : i)));
+  const updateQty = (slug, qty) => setItems((prev) => prev.map((i) => (i.slug === slug ? { ...i, qty: Math.min(99, Math.max(1, qty)) } : i)));
   const clear = () => setItems([]);
   const count = items.reduce((n, i) => n + i.qty, 0);
   const subtotal = items.reduce((n, i) => n + (i.price || 0) * i.qty, 0);
