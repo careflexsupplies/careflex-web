@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Phone, Printer, Mail, Clock, MapPin, CheckCircle2 } from "lucide-react";
 import Layout, { CallButton } from "@/components/Layout";
 import { usePageMeta } from "@/components/Shared";
-import { api, PHONE, PHONE_HREF, FAX, EMAIL, trackEvent } from "@/lib/api";
+import { api, PHONE, PHONE_HREF, MAIN_PHONE, MAIN_PHONE_HREF, FAX, EMAIL, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 import { useLang } from "@/i18n";
 
@@ -33,7 +33,11 @@ export default function Contact() {
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-5">
               <a href={PHONE_HREF} className="flex items-center gap-4 text-lg" data-testid="contact-phone">
                 <span className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center shrink-0"><Phone className="w-5 h-5 text-accent" aria-hidden="true" /></span>
-                <span><span className="block font-semibold text-primary">{PHONE}</span><span className="text-slate-500 text-base">Tap to call on mobile</span></span>
+                <span><span className="block font-semibold text-primary">{PHONE}</span><span className="text-slate-500 text-base">Call now — tap to call on mobile</span></span>
+              </a>
+              <a href={MAIN_PHONE_HREF} className="flex items-center gap-4 text-lg" data-testid="contact-main-phone">
+                <span className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0"><Phone className="w-5 h-5 text-primary" aria-hidden="true" /></span>
+                <span><span className="block font-semibold text-primary">Main office: {MAIN_PHONE}</span><span className="text-slate-500 text-base">Billing & general inquiries</span></span>
               </a>
               <p className="flex items-center gap-4 text-lg">
                 <span className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0"><Printer className="w-5 h-5 text-primary" aria-hidden="true" /></span>
@@ -45,7 +49,7 @@ export default function Contact() {
               </a>
               <p className="flex items-center gap-4 text-lg">
                 <span className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0"><Clock className="w-5 h-5 text-primary" aria-hidden="true" /></span>
-                <span className="font-semibold text-primary">{t("footer_hours")}</span>
+                <span className="font-semibold text-primary" data-testid="contact-hours">{t("contact_hours")}<span className="block text-slate-500 text-base font-normal">{t("footer_hours")}</span></span>
               </p>
               <p className="flex items-center gap-4 text-lg">
                 <span className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0"><MapPin className="w-5 h-5 text-primary" aria-hidden="true" /></span>

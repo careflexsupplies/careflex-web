@@ -5,10 +5,12 @@ export const API = `${BACKEND_URL}/api`;
 
 export const api = axios.create({ baseURL: API, withCredentials: true });
 
-export const PHONE = "+1 346-636-0201 #800";
-export const PHONE_HREF = "tel:+13466360201,800";
-export const FAX = "(713) 800-5088";
-export const EMAIL = "care@careflex.com";
+export const PHONE = "(346) 621-1342";
+export const PHONE_HREF = "tel:+13466211342";
+export const MAIN_PHONE = "(346) 646-3386";
+export const MAIN_PHONE_HREF = "tel:+13466463386";
+export const FAX = "(346) 601-3640";
+export const EMAIL = "contact@careflexsupplies.com";
 export const PROMO_CODE = "CARE10";
 export const PROMO_DISCOUNT = 0.10;
 export const SOCIALS = {

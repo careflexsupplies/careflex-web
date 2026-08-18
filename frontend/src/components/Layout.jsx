@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Phone, Menu, X, Printer, Mail, Clock, MapPin, ShieldCheck, HeartPulse, MessageCircle, Search, ShoppingCart, ChevronDown, Truck, Facebook, Instagram, Linkedin } from "lucide-react";
 import { useLang } from "@/i18n";
 import { useCart } from "@/context/CartContext";
-import { PHONE, PHONE_HREF, FAX, EMAIL, SOCIALS, HQAA_SEAL, api, trackEvent } from "@/lib/api";
+import { PHONE, PHONE_HREF, MAIN_PHONE, MAIN_PHONE_HREF, FAX, EMAIL, SOCIALS, HQAA_SEAL, api, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 
 export function CallButton({ className = "", size = "md" }) {
@@ -250,9 +250,10 @@ export function Footer() {
           <h3 className="font-serif text-lg font-semibold mb-4">Contact</h3>
           <ul className="space-y-3 text-slate-300">
             <li><a href={PHONE_HREF} className="inline-flex items-center gap-2 hover:text-white transition-colors" data-testid="footer-phone"><Phone className="w-4 h-4" />{PHONE}</a></li>
-            <li className="inline-flex items-center gap-2"><Printer className="w-4 h-4" />Fax: {FAX}</li>
+            <li><a href={MAIN_PHONE_HREF} className="inline-flex items-center gap-2 hover:text-white transition-colors" data-testid="footer-main-phone"><Phone className="w-4 h-4" />Main: {MAIN_PHONE}</a></li>
+            <li className="inline-flex items-center gap-2" data-testid="footer-fax"><Printer className="w-4 h-4" />Fax: {FAX}</li>
             <li><a href={`mailto:${EMAIL}`} className="inline-flex items-center gap-2 hover:text-white transition-colors"><Mail className="w-4 h-4" />{EMAIL}</a></li>
-            <li className="inline-flex items-center gap-2"><Clock className="w-4 h-4" />{t("footer_hours")}</li>
+            <li className="inline-flex items-start gap-2" data-testid="footer-hours"><Clock className="w-4 h-4 mt-1 shrink-0" /><span>{t("footer_hours")}<span className="block">{t("contact_hours")}</span></span></li>
             <li className="inline-flex items-start gap-2"><MapPin className="w-4 h-4 mt-1 shrink-0" />Houston, TX — Greater Houston service area</li>
           </ul>
         </div>
