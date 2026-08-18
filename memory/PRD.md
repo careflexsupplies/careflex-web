@@ -34,6 +34,13 @@ Fast, HIPAA-aware, conversion-optimized website for CareFlex (accredited DME sup
 - Admin allowlist: ADMIN_EMAILS env (empty=allow all; enforced at login only, not session revocation)
 - Home: Wonace-style 3 feature cards (Glucose Monitors/CGM, Mobility Aids, Braces) + 12-product quick-shop grid
 
+## Iteration 4 (Aug 2026 — STATIC CONVERSION)
+- Site converted to static frontend-only per user request. Backend + MongoDB REMOVED (server.py is a health stub only; admin dashboard, Google auth, lead inbox, resupply admin list all removed).
+- All content now in /app/frontend/src/data/content.js (CATEGORIES, PRODUCTS, POSTS, FAQS, TESTIMONIALS, SERVICE_AREAS) — edit that file to change content, then rebuild.
+- All forms (contact, footer, referral, new patient, campaign landing, cart order, resupply opt-in) email submissions to contact@careflexsupplies.com via FormSubmit.co AJAX (see submitForm in lib/api.js). NOTE: FormSubmit requires one-time activation — first submission sends an activation email to that inbox; click it once.
+- Build output: /app/frontend/build; zip at /app/careflex-static-site.zip and downloadable at {preview-url}/careflex-static-site.zip
+- Hours: Office Tue–Thu 8–6, Phone/Contact Mon–Fri 8–6. Contacts: (346) 621-1342 primary, (346) 646-3386 main, fax (346) 601-3640, contact@careflexsupplies.com
+
 ## Backlog (prioritized)
 - P0: Real Jotform HIPAA URL, real tracking IDs (GA4, CallRail, Clarity, Tawk), real social URLs, set ADMIN_EMAILS allowlist, brand assets (logo file, address, hours)
 - P1: Resupply reminder actual sending (Resend + Twilio) + admin scheduler, email notifications to staff on new leads, image upload for products (object storage)

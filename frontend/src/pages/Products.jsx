@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useLang } from "@/i18n";
-import { api } from "@/lib/api";
+import { CATEGORIES, PRODUCTS } from "@/data/content";
 import Layout from "@/components/Layout";
 import { ProductCard, ResupplyOptIn, usePageMeta } from "@/components/Shared";
 
@@ -10,8 +10,7 @@ export default function Products() {
   const { categorySlug } = useParams();
   const [params] = useSearchParams();
   const { t, pick } = useLang();
-  const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
+  const categories = CATEGORIES;
   const [search, setSearch] = useState(params.get("search") || "");
   const [coverage, setCoverage] = useState("");
   const category = categories.find((c) => c.slug === categorySlug);
@@ -21,17 +20,11 @@ export default function Products() {
     setSearch(params.get("search") || "");
   }, [params]);
 
-  useEffect(() => {
-    api.get("/categories").then((r) => setCategories(r.data));
-  }, []);
-
-  useEffect(() => {
-    const params = {};
-    if (categorySlug) params.category = categorySlug;
-    if (coverage) params.coverage = coverage;
-    if (search) params.search = search;
-    api.get("/products", { params }).then((r) => setProducts(r.data));
-  }, [categorySlug, coverage, search]);
+  const products = PRODUCTS.filter((p) =>
+    (!categorySlug || p.category_slug === categorySlug) &&
+    (!coverage || p.coverage === coverage) &&
+    (!search || `${p.name} ${p.description}`.toLowerCase().includes(search.toLowerCase()))
+  );
 
   const showResupply = ["diabetes-care", "wound-care"].includes(categorySlug);
 

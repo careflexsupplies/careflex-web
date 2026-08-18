@@ -1,19 +1,14 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import Layout from "@/components/Layout";
 import { usePageMeta } from "@/components/Shared";
-import { api } from "@/lib/api";
+import { POSTS } from "@/data/content";
 import { useLang } from "@/i18n";
 
 export default function Blog() {
   const { t } = useLang();
-  const [posts, setPosts] = useState([]);
+  const posts = POSTS;
   usePageMeta("Resources & Guides", "Plain-language guides on Medicare coverage, mobility aids, diabetes supplies and more from CareFlex.");
-
-  useEffect(() => {
-    api.get("/posts").then((r) => setPosts(r.data));
-  }, []);
 
   return (
     <Layout>

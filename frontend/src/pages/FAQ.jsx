@@ -1,31 +1,28 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Layout, { CallButton } from "@/components/Layout";
 import { usePageMeta } from "@/components/Shared";
-import { api } from "@/lib/api";
+import { FAQS } from "@/data/content";
 import { useLang } from "@/i18n";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default function FAQ() {
   const { t, pick } = useLang();
-  const [faqs, setFaqs] = useState([]);
+  const faqs = FAQS;
   usePageMeta("FAQ", "Answers to common questions about Medicare DME coverage, delivery, resupply reminders, and more.");
 
   useEffect(() => {
-    api.get("/faqs").then((r) => {
-      setFaqs(r.data);
-      const schema = {
-        "@context": "https://schema.org", "@type": "FAQPage",
-        mainEntity: r.data.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
-      };
-      let el = document.getElementById("faq-schema");
-      if (!el) {
-        el = document.createElement("script");
-        el.type = "application/ld+json";
-        el.id = "faq-schema";
-        document.head.appendChild(el);
-      }
-      el.textContent = JSON.stringify(schema);
-    });
+    const schema = {
+      "@context": "https://schema.org", "@type": "FAQPage",
+      mainEntity: FAQS.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
+    };
+    let el = document.getElementById("faq-schema");
+    if (!el) {
+      el = document.createElement("script");
+      el.type = "application/ld+json";
+      el.id = "faq-schema";
+      document.head.appendChild(el);
+    }
+    el.textContent = JSON.stringify(schema);
     return () => document.getElementById("faq-schema")?.remove();
   }, []);
 

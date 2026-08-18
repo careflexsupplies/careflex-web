@@ -1,9 +1,15 @@
-import axios from "axios";
+export const FORM_EMAIL = "contact@careflexsupplies.com";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-export const API = `${BACKEND_URL}/api`;
-
-export const api = axios.create({ baseURL: API, withCredentials: true });
+// Sends form submissions by email via FormSubmit (no backend needed).
+export async function submitForm(subject, data) {
+  const res = await fetch(`https://formsubmit.co/ajax/${FORM_EMAIL}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ _subject: `CareFlex — ${subject}`, _template: "table", _captcha: "false", ...data }),
+  });
+  if (!res.ok) throw new Error("Form submission failed");
+  return res.json();
+}
 
 export const PHONE = "(346) 621-1342";
 export const PHONE_HREF = "tel:+13466211342";

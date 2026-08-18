@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import Layout, { CallButton } from "@/components/Layout";
 import { usePageMeta, ProductCard } from "@/components/Shared";
-import { api } from "@/lib/api";
+import { POSTS, PRODUCTS } from "@/data/content";
 
 function renderContent(content) {
   return content.split("\n").map((line, i) => {
@@ -25,17 +24,11 @@ function renderInline(text) {
 
 export default function BlogPost() {
   const { slug } = useParams();
-  const [post, setPost] = useState(null);
-  const [related, setRelated] = useState([]);
+  const post = POSTS.find((p) => p.slug === slug);
+  const related = PRODUCTS.filter((p) => p.featured).slice(0, 3);
   usePageMeta(post?.seo_title || post?.title, post?.seo_description);
 
-  useEffect(() => {
-    api.get(`/posts/${slug}`).then((r) => setPost(r.data)).catch(() => setPost(false));
-    api.get("/products", { params: { featured: true } }).then((r) => setRelated(r.data.slice(0, 3)));
-  }, [slug]);
-
-  if (post === false) return <Layout><div className="max-w-3xl mx-auto px-4 py-24 text-center text-xl text-slate-600">Article not found. <Link to="/blog" className="text-primary underline">Back to resources</Link></div></Layout>;
-  if (!post) return <Layout><div className="max-w-3xl mx-auto px-4 py-24 text-center text-slate-500">Loading…</div></Layout>;
+  if (!post) return <Layout><div className="max-w-3xl mx-auto px-4 py-24 text-center text-xl text-slate-600">Article not found. <Link to="/blog" className="text-primary underline">Back to resources</Link></div></Layout>;
 
   return (
     <Layout>

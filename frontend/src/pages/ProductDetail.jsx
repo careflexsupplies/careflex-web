@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { CheckCircle2, ArrowLeft, PackageCheck, ShoppingCart } from "lucide-react";
 import { useLang } from "@/i18n";
 import { useCart } from "@/context/CartContext";
-import { api, trackEvent } from "@/lib/api";
+import { trackEvent } from "@/lib/api";
+import { PRODUCTS } from "@/data/content";
 import Layout, { CallButton, TrustBadges } from "@/components/Layout";
 import { CoverageBadge, ResupplyOptIn, usePageMeta } from "@/components/Shared";
 import { toast } from "sonner";
@@ -12,17 +12,10 @@ export default function ProductDetail() {
   const { slug } = useParams();
   const { t } = useLang();
   const { addItem } = useCart();
-  const [product, setProduct] = useState(null);
-  const [notFound, setNotFound] = useState(false);
+  const product = PRODUCTS.find((p) => p.slug === slug);
   usePageMeta(product?.name, product?.description);
 
-  useEffect(() => {
-    setProduct(null);
-    api.get(`/products/${slug}`).then((r) => setProduct(r.data)).catch(() => setNotFound(true));
-  }, [slug]);
-
-  if (notFound) return <Layout><div className="max-w-4xl mx-auto px-4 py-24 text-center text-xl text-slate-600">Product not found. <Link to="/products" className="text-primary underline">Browse catalog</Link></div></Layout>;
-  if (!product) return <Layout><div className="max-w-4xl mx-auto px-4 py-24 text-center text-slate-500">Loading…</div></Layout>;
+  if (!product) return <Layout><div className="max-w-4xl mx-auto px-4 py-24 text-center text-xl text-slate-600">Product not found. <Link to="/products" className="text-primary underline">Browse catalog</Link></div></Layout>;
 
   const resupplyEligible = ["diabetes-care", "wound-care"].includes(product.category_slug);
 

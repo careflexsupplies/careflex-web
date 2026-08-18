@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Phone, Printer, Mail, Clock, MapPin, CheckCircle2 } from "lucide-react";
 import Layout, { CallButton } from "@/components/Layout";
 import { usePageMeta } from "@/components/Shared";
-import { api, PHONE, PHONE_HREF, MAIN_PHONE, MAIN_PHONE_HREF, FAX, EMAIL, trackEvent } from "@/lib/api";
+import { submitForm, PHONE, PHONE_HREF, MAIN_PHONE, MAIN_PHONE_HREF, FAX, EMAIL, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 import { useLang } from "@/i18n";
 
@@ -14,10 +14,14 @@ export default function Contact() {
 
   const submit = async (e) => {
     e.preventDefault();
-    await api.post("/leads", { type: "contact", source: "contact_page", ...form });
-    trackEvent("form_submit", { form: "contact_page" });
-    setSent(true);
-    toast.success(t("thanks"));
+    try {
+      await submitForm("Contact form", form);
+      trackEvent("form_submit", { form: "contact_page" });
+      setSent(true);
+      toast.success(t("thanks"));
+    } catch {
+      toast.error("Something went wrong. Please try again or call us.");
+    }
   };
 
   const inputCls = "w-full px-4 py-3 min-h-[44px] rounded-md border border-slate-300 bg-white focus:border-primary";

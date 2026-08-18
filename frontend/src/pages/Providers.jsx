@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Printer, Clock, CheckCircle2 } from "lucide-react";
 import Layout, { CallButton } from "@/components/Layout";
 import { usePageMeta } from "@/components/Shared";
-import { api, FAX, trackEvent } from "@/lib/api";
+import { FAX, submitForm, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 
 export default function Providers() {
@@ -12,10 +12,14 @@ export default function Providers() {
 
   const submit = async (e) => {
     e.preventDefault();
-    await api.post("/leads", { type: "referral", ...form });
-    trackEvent("form_submit", { form: "provider_referral" });
-    setSent(true);
-    toast.success("Referral received — we'll confirm within one business day.");
+    try {
+      await submitForm("Provider referral", form);
+      trackEvent("form_submit", { form: "provider_referral" });
+      setSent(true);
+      toast.success("Referral received — we'll confirm within one business day.");
+    } catch {
+      toast.error("Something went wrong. Please try again or call us.");
+    }
   };
 
   const inputCls = "w-full px-4 py-3 min-h-[44px] rounded-md border border-slate-300 bg-white focus:border-primary";

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { BadgeCheck, Wallet, Bell, Plus } from "lucide-react";
 import { useLang } from "@/i18n";
 import { useCart } from "@/context/CartContext";
-import { api, trackEvent } from "@/lib/api";
+import { submitForm, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 
 export function usePageMeta(title, description) {
@@ -70,10 +70,14 @@ export function ResupplyOptIn({ defaultCategory = "diabetes-care" }) {
   const [done, setDone] = useState(false);
   const submit = async (e) => {
     e.preventDefault();
-    await api.post("/subscribers", form);
-    trackEvent("resupply_optin", { category: form.product_category });
-    setDone(true);
-    toast.success(t("resupply_done"));
+    try {
+      await submitForm("Resupply reminder opt-in", form);
+      trackEvent("resupply_optin", { category: form.product_category });
+      setDone(true);
+      toast.success(t("resupply_done"));
+    } catch {
+      toast.error("Something went wrong. Please try again or call us.");
+    }
   };
   return (
     <section className="bg-primary rounded-2xl p-8 sm:p-10 text-white" data-testid="resupply-optin">

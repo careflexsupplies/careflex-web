@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Star, ArrowRight, ClipboardList, FileCheck2, Truck } from "lucide-react";
 import { useLang } from "@/i18n";
-import { api, trackEvent } from "@/lib/api";
+import { trackEvent } from "@/lib/api";
+import { CATEGORIES, PRODUCTS, TESTIMONIALS } from "@/data/content";
 import Layout, { CallButton, TrustBadges } from "@/components/Layout";
 import { ProductCard, usePageMeta } from "@/components/Shared";
 
@@ -16,16 +16,10 @@ const FEATURE_CARDS = [
 
 export default function Home() {
   const { t, pick } = useLang();
-  const [categories, setCategories] = useState([]);
-  const [featured, setFeatured] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
+  const categories = CATEGORIES;
+  const featured = PRODUCTS.slice(0, 12);
+  const testimonials = TESTIMONIALS;
   usePageMeta(null);
-
-  useEffect(() => {
-    api.get("/categories").then((r) => setCategories(r.data));
-    api.get("/products").then((r) => setFeatured(r.data.slice(0, 12)));
-    api.get("/testimonials").then((r) => setTestimonials(r.data));
-  }, []);
 
   const steps = [
     { icon: ClipboardList, title: t("how_1t"), desc: t("how_1d") },

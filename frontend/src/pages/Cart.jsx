@@ -4,7 +4,7 @@ import { Trash2, Minus, Plus, ShoppingCart, CheckCircle2, Tag } from "lucide-rea
 import Layout, { CallButton } from "@/components/Layout";
 import { usePageMeta } from "@/components/Shared";
 import { useCart } from "@/context/CartContext";
-import { api, PROMO_CODE, PROMO_DISCOUNT, trackEvent } from "@/lib/api";
+import { submitForm, PROMO_CODE, PROMO_DISCOUNT, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 
 export default function Cart() {
@@ -30,12 +30,11 @@ export default function Cart() {
   const submit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/leads", {
-        type: "order", ...form,
+      await submitForm("Cash-pay order request", {
+        ...form,
         items: items.map((i) => `${i.qty}x ${i.name} ($${i.price})`).join("; "),
-        promo_code: applied ? PROMO_CODE : null,
-        total: Number(total.toFixed(2)),
-        message: `Cash-pay order request — total $${total.toFixed(2)}${applied ? ` (promo ${PROMO_CODE})` : ""}`,
+        promo_code: applied ? PROMO_CODE : "none",
+        total: `$${total.toFixed(2)}`,
       });
       trackEvent("form_submit", { form: "order_request", total });
       clear();

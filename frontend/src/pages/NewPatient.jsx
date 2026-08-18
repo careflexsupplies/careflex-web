@@ -3,7 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { ShieldCheck, CreditCard, CheckCircle2, ArrowLeft } from "lucide-react";
 import Layout, { CallButton, TrustBadges } from "@/components/Layout";
 import { usePageMeta } from "@/components/Shared";
-import { api, trackEvent } from "@/lib/api";
+import { submitForm, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 
 const categories = [
@@ -23,7 +23,7 @@ export default function NewPatient() {
   const submit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/leads", { type: "new_patient", plan_type: plan, ...form, message: `New patient (${plan?.toUpperCase()}) — needs: ${form.equipment_category}` });
+      await submitForm(`New patient (${plan === "medicare" ? "Medicare" : "Commercial PPO"})`, { ...form, plan_type: plan });
       trackEvent("form_submit", { form: "new_patient", plan });
       setDone(true);
     } catch {

@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Phone, Menu, X, Printer, Mail, Clock, MapPin, ShieldCheck, HeartPulse, MessageCircle, Search, ShoppingCart, ChevronDown, Truck, Facebook, Instagram, Linkedin } from "lucide-react";
 import { useLang } from "@/i18n";
 import { useCart } from "@/context/CartContext";
-import { PHONE, PHONE_HREF, MAIN_PHONE, MAIN_PHONE_HREF, FAX, EMAIL, SOCIALS, HQAA_SEAL, api, trackEvent } from "@/lib/api";
+import { PHONE, PHONE_HREF, MAIN_PHONE, MAIN_PHONE_HREF, FAX, EMAIL, SOCIALS, HQAA_SEAL, submitForm, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 
 export function CallButton({ className = "", size = "md" }) {
@@ -207,10 +207,14 @@ function MiniContactForm() {
   const [sent, setSent] = useState(false);
   const submit = async (e) => {
     e.preventDefault();
-    await api.post("/leads", { type: "contact", source: "footer", ...form });
-    trackEvent("form_submit", { form: "footer_contact" });
-    setSent(true);
-    toast.success(t("thanks"));
+    try {
+      await submitForm("Website message (footer)", form);
+      trackEvent("form_submit", { form: "footer_contact" });
+      setSent(true);
+      toast.success(t("thanks"));
+    } catch {
+      toast.error("Something went wrong. Please try again or call us.");
+    }
   };
   if (sent) return <p className="text-slate-300" data-testid="footer-form-success">{t("thanks")}</p>;
   return (
@@ -268,7 +272,6 @@ export function Footer() {
             <li><Link to="/faq" className="hover:text-white transition-colors">{t("nav_faq")}</Link></li>
             <li><Link to="/providers" className="hover:text-white transition-colors">{t("nav_providers")}</Link></li>
             <li><Link to="/service-area" className="hover:text-white transition-colors">{t("service_title")}</Link></li>
-            <li><Link to="/admin" className="hover:text-white transition-colors" data-testid="footer-admin-link">Staff Login</Link></li>
           </ul>
         </div>
         <div>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { HeartPulse, CheckCircle2, ArrowRight, ArrowLeft } from "lucide-react";
 import { CallButton, TrustBadges } from "@/components/Layout";
 import { usePageMeta } from "@/components/Shared";
-import { api, trackEvent } from "@/lib/api";
+import { submitForm, trackEvent } from "@/lib/api";
 import { toast } from "sonner";
 
 const needs = [
@@ -23,7 +23,7 @@ export default function Landing() {
 
   const submit = async () => {
     try {
-      await api.post("/leads", { type: "campaign", source: "landing_page", variant: "A", ...form, message: `Needs: ${form.equipment_category}; Insurance: ${form.insurance}` });
+      await submitForm("Campaign landing lead", { ...form, needs: form.equipment_category, insurance: form.insurance });
       trackEvent("form_submit", { form: "campaign_landing" });
       setDone(true);
     } catch {

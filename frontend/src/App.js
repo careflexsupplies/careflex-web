@@ -1,8 +1,7 @@
 import "@/App.css";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import { LangProvider } from "@/i18n";
-import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import Home from "@/pages/Home";
 import Products from "@/pages/Products";
@@ -19,14 +18,8 @@ import FAQ from "@/pages/FAQ";
 import ServiceArea from "@/pages/ServiceArea";
 import NewPatient from "@/pages/NewPatient";
 import Cart from "@/pages/Cart";
-import AdminLogin from "@/pages/AdminLogin";
-import Admin from "@/pages/admin/Admin";
-import AuthCallback from "@/pages/AuthCallback";
 
 function AppRouter() {
-  const location = useLocation();
-  // Process OAuth session_id synchronously before any other route logic
-  if (location.hash?.includes("session_id=")) return <AuthCallback />;
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -45,8 +38,6 @@ function AppRouter() {
       <Route path="/service-area" element={<ServiceArea />} />
       <Route path="/new-patient" element={<NewPatient />} />
       <Route path="/cart" element={<Cart />} />
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin" element={<Admin />} />
     </Routes>
   );
 }
@@ -55,14 +46,12 @@ function App() {
   return (
     <div className="App">
       <LangProvider>
-        <AuthProvider>
-          <CartProvider>
-            <BrowserRouter>
-              <AppRouter />
-            </BrowserRouter>
-            <Toaster position="top-center" richColors />
-          </CartProvider>
-        </AuthProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <AppRouter />
+          </BrowserRouter>
+          <Toaster position="top-center" richColors />
+        </CartProvider>
       </LangProvider>
     </div>
   );

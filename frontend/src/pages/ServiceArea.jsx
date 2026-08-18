@@ -1,18 +1,13 @@
-import { useState, useEffect } from "react";
 import { MapPin, Truck } from "lucide-react";
 import Layout, { CallButton } from "@/components/Layout";
 import { usePageMeta } from "@/components/Shared";
-import { api } from "@/lib/api";
+import { SERVICE_AREAS } from "@/data/content";
 import { useLang } from "@/i18n";
 
 export default function ServiceArea() {
   const { t } = useLang();
-  const [areas, setAreas] = useState([]);
+  const areas = SERVICE_AREAS;
   usePageMeta("Delivery & Service Area", "CareFlex delivers medical equipment across 8 Greater Houston counties — free delivery and setup included.");
-
-  useEffect(() => {
-    api.get("/service-areas").then((r) => setAreas(r.data));
-  }, []);
 
   return (
     <Layout>
